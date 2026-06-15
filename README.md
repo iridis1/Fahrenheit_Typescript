@@ -24,6 +24,15 @@ npm start
 
 De server draait standaard op poort 80.
 
+## Swagger Documentatie
+
+De API documentatie is beschikbaar via Swagger UI op:
+```
+http://localhost/api-docs
+```
+
+Swagger UI biedt een interactieve interface om de API endpoints te testen en te documenteren.
+
 ## API Endpoint
 
 ### GET /convert?fahrenheit=<waarde>
