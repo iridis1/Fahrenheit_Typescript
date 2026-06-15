@@ -1,0 +1,29 @@
+{
+  "name": "fahrenheit-typescript",
+  "version": "1.0.0",
+  "description": "Express TypeScript webservice for Fahrenheit to Celsius conversion",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.ts",
+    "dev2": "tsx src/index.ts"
+  },
+  "keywords": [
+    "express",
+    "typescript",
+    "fahrenheit",
+    "celsius",
+    "conversion"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.3",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
+  }
+}
