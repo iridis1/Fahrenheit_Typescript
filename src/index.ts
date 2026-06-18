@@ -86,6 +86,62 @@ app.get('/convert', (req: Request, res: Response) => {
 
 /**
  * @swagger
+ * /convert-celsius:
+ *   get:
+ *     summary: Converteert Celsius naar Fahrenheit
+ *     tags: [Conversion]
+ *     parameters:
+ *       - in: query
+ *         name: celsius
+ *         required: true
+ *         schema:
+ *           type: number
+ *         description: De Celsius waarde om te converteren
+ *     responses:
+ *       200:
+ *         description: Succesvolle conversie
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 celsius:
+ *                   type: number
+ *                 fahrenheit:
+ *                   type: number
+ *       400:
+ *         description: Ontbrekende of ongeldige parameter
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
+app.get('/convert-celsius', (req: Request, res: Response) => {
+  const { celsius } = req.query;
+
+  if (!celsius) {
+    return res.status(400).json({ error: 'Missing celsius parameter' });
+  }
+
+  const celsiusValue = parseFloat(celsius as string);
+
+  if (isNaN(celsiusValue)) {
+    return res.status(400).json({ error: 'Invalid celsius value' });
+  }
+
+  const fahrenheit = (celsiusValue * 9 / 5) + 32;
+
+  res.json({
+    celsius: celsiusValue,
+    fahrenheit: parseFloat(fahrenheit.toFixed(2))
+  });
+});
+
+/**
+ * @swagger
  * /:
  *   get:
  *     summary: API informatie

@@ -1,6 +1,6 @@
 # Fahrenheit to Celsius Converter API
 
-Een Express TypeScript webservice voor het converteren van Fahrenheit naar Celsius.
+Een Express TypeScript webservice voor het converteren van Fahrenheit naar Celsius en vice versa.
 
 ## Installatie
 
@@ -57,6 +57,29 @@ curl "http://localhost/convert?fahrenheit=100"
 
 **Foutmeldingen:**
 - `400` - Ontbrekende of ongeldige fahrenheit parameter
+
+### GET /convert-celsius?celsius=<waarde>
+
+Converteert Celsius naar Fahrenheit.
+
+**Parameters:**
+- `celsius` (number, vereist) - De Celsius waarde om te converteren
+
+**Voorbeeld:**
+```bash
+curl "http://localhost/convert-celsius?celsius=37.78"
+```
+
+**Response:**
+```json
+{
+  "celsius": 37.78,
+  "fahrenheit": 100.00
+}
+```
+
+**Foutmeldingen:**
+- `400` - Ontbrekende of ongeldige celsius parameter
 
 ### GET /
 
