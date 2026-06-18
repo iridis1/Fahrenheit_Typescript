@@ -32,15 +32,21 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  * @swagger
  * /convert:
  *   get:
- *     summary: Converteert Fahrenheit naar Celsius
+ *     summary: Converteert Fahrenheit naar Celsius of Celsius naar Fahrenheit
  *     tags: [Conversion]
  *     parameters:
  *       - in: query
  *         name: fahrenheit
- *         required: true
+ *         required: false
  *         schema:
  *           type: number
- *         description: De Fahrenheit waarde om te converteren
+ *         description: De Fahrenheit waarde om te converteren naar Celsius
+ *       - in: query
+ *         name: celsius
+ *         required: false
+ *         schema:
+ *           type: number
+ *         description: De Celsius waarde om te converteren naar Fahrenheit
  *     responses:
  *       200:
  *         description: Succesvolle conversie
@@ -64,80 +70,43 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *                   type: string
  */
 app.get('/convert', (req: Request, res: Response) => {
-  const { fahrenheit } = req.query;
+  const { fahrenheit, celsius } = req.query;
 
-  if (!fahrenheit) {
-    return res.status(400).json({ error: 'Missing fahrenheit parameter' });
+  if (!fahrenheit && !celsius) {
+    return res.status(400).json({ error: 'Missing parameter: provide either fahrenheit or celsius' });
   }
 
-  const fahrenheitValue = parseFloat(fahrenheit as string);
-
-  if (isNaN(fahrenheitValue)) {
-    return res.status(400).json({ error: 'Invalid fahrenheit value' });
+  if (fahrenheit && celsius) {
+    return res.status(400).json({ error: 'Provide only one parameter: either fahrenheit or celsius, not both' });
   }
 
-  const celsius = (fahrenheitValue - 32) * (5 / 9);
+  if (fahrenheit) {
+    const fahrenheitValue = parseFloat(fahrenheit as string);
 
-  res.json({
-    fahrenheit: fahrenheitValue,
-    celsius: parseFloat(celsius.toFixed(2))
-  });
-});
+    if (isNaN(fahrenheitValue)) {
+      return res.status(400).json({ error: 'Invalid fahrenheit value' });
+    }
 
-/**
- * @swagger
- * /convert-celsius:
- *   get:
- *     summary: Converteert Celsius naar Fahrenheit
- *     tags: [Conversion]
- *     parameters:
- *       - in: query
- *         name: celsius
- *         required: true
- *         schema:
- *           type: number
- *         description: De Celsius waarde om te converteren
- *     responses:
- *       200:
- *         description: Succesvolle conversie
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 celsius:
- *                   type: number
- *                 fahrenheit:
- *                   type: number
- *       400:
- *         description: Ontbrekende of ongeldige parameter
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 error:
- *                   type: string
- */
-app.get('/convert-celsius', (req: Request, res: Response) => {
-  const { celsius } = req.query;
+    const celsiusValue = (fahrenheitValue - 32) * (5 / 9);
 
-  if (!celsius) {
-    return res.status(400).json({ error: 'Missing celsius parameter' });
+    res.json({
+      fahrenheit: fahrenheitValue,
+      celsius: parseFloat(celsiusValue.toFixed(2))
+    });
+  } else if (celsius) {
+    const celsiusValue = parseFloat(celsius as string);
+
+    if (isNaN(celsiusValue)) {
+      return res.status(400).json({ error: 'Invalid celsius value' });
+    }
+
+    const fahrenheitValue = (celsiusValue * 9 / 5) + 32;
+
+    res.json({
+      celsius: celsiusValue,
+      fahrenheit: parseFloat(fahrenheitValue.toFixed(2))
+    });
   }
-
-  const celsiusValue = parseFloat(celsius as string);
-
-  if (isNaN(celsiusValue)) {
-    return res.status(400).json({ error: 'Invalid celsius value' });
-  }
-
-  const fahrenheit = (celsiusValue * 9 / 5) + 32;
-
-  res.json({
-    celsius: celsiusValue,
-    fahrenheit: parseFloat(fahrenheit.toFixed(2))
-  });
 });
 
 /**
@@ -164,8 +133,11 @@ app.get('/convert-celsius', (req: Request, res: Response) => {
 app.get('/', (req: Request, res: Response) => {
   res.json({
     message: 'Fahrenheit to Celsius Converter API',
-    endpoint: '/convert?fahrenheit=<value>',
-    example: '/convert?fahrenheit=100'
+    endpoint: '/convert?fahrenheit=<value> or /convert?celsius=<value>',
+    examples: [
+      '/convert?fahrenheit=100',
+      '/convert?celsius=37.78'
+    ]
   });
 });
 

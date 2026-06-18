@@ -35,19 +35,27 @@ Swagger UI biedt een interactieve interface om de API endpoints te testen en te 
 
 ## API Endpoint
 
-### GET /convert?fahrenheit=<waarde>
+### GET /convert?fahrenheit=<waarde> of /convert?celsius=<waarde>
 
-Converteert Fahrenheit naar Celsius.
+Converteert Fahrenheit naar Celsius of Celsius naar Fahrenheit.
 
 **Parameters:**
-- `fahrenheit` (number, vereist) - De Fahrenheit waarde om te converteren
+- `fahrenheit` (number, optioneel) - De Fahrenheit waarde om te converteren naar Celsius
+- `celsius` (number, optioneel) - De Celsius waarde om te converteren naar Fahrenheit
 
-**Voorbeeld:**
+**Opmerking:** Geef precies één parameter op (fahrenheit of celsius), niet beide.
+
+**Voorbeeld Fahrenheit naar Celsius:**
 ```bash
 curl "http://localhost/convert?fahrenheit=100"
 ```
 
-**Response:**
+**Voorbeeld Celsius naar Fahrenheit:**
+```bash
+curl "http://localhost/convert?celsius=37.78"
+```
+
+**Response (Fahrenheit naar Celsius):**
 ```json
 {
   "fahrenheit": 100,
@@ -55,22 +63,7 @@ curl "http://localhost/convert?fahrenheit=100"
 }
 ```
 
-**Foutmeldingen:**
-- `400` - Ontbrekende of ongeldige fahrenheit parameter
-
-### GET /convert-celsius?celsius=<waarde>
-
-Converteert Celsius naar Fahrenheit.
-
-**Parameters:**
-- `celsius` (number, vereist) - De Celsius waarde om te converteren
-
-**Voorbeeld:**
-```bash
-curl "http://localhost/convert-celsius?celsius=37.78"
-```
-
-**Response:**
+**Response (Celsius naar Fahrenheit):**
 ```json
 {
   "celsius": 37.78,
@@ -79,7 +72,9 @@ curl "http://localhost/convert-celsius?celsius=37.78"
 ```
 
 **Foutmeldingen:**
-- `400` - Ontbrekende of ongeldige celsius parameter
+- `400` - Geen parameter opgegeven (geef fahrenheit of celsius op)
+- `400` - Beide parameters opgegeven (geef er slechts één op)
+- `400` - Ongeldige parameter waarde
 
 ### GET /
 
@@ -89,8 +84,11 @@ Basis endpoint met API informatie.
 ```json
 {
   "message": "Fahrenheit to Celsius Converter API",
-  "endpoint": "/convert?fahrenheit=<value>",
-  "example": "/convert?fahrenheit=100"
+  "endpoint": "/convert?fahrenheit=<value> or /convert?celsius=<value>",
+  "examples": [
+    "/convert?fahrenheit=100",
+    "/convert?celsius=37.78"
+  ]
 }
 ```
 
