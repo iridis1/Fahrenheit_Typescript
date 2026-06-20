@@ -101,4 +101,4 @@ Fahrenheit_Typescript/
 ├── package.json          # Project configuratie en scripts
 ├── tsconfig.json         # TypeScript configuratie
 └── README.md             # Dit bestand
-```
+```r
