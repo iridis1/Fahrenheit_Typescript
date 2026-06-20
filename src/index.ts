@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
+import { fahrenheitToCelsius, celsiusToFahrenheit, isValidNumber } from './conversion';
 
 const app = express();
 const PORT = 80;
@@ -81,30 +82,28 @@ app.get('/convert', (req: Request, res: Response) => {
   }
 
   if (fahrenheit) {
-    const fahrenheitValue = parseFloat(fahrenheit as string);
-
-    if (isNaN(fahrenheitValue)) {
+    if (!isValidNumber(fahrenheit as string)) {
       return res.status(400).json({ error: 'Invalid fahrenheit value' });
     }
 
-    const celsiusValue = (fahrenheitValue - 32) * (5 / 9);
+    const fahrenheitValue = parseFloat(fahrenheit as string);
+    const celsiusValue = fahrenheitToCelsius(fahrenheitValue);
 
     res.json({
       fahrenheit: fahrenheitValue,
-      celsius: parseFloat(celsiusValue.toFixed(2))
+      celsius: celsiusValue
     });
   } else if (celsius) {
-    const celsiusValue = parseFloat(celsius as string);
-
-    if (isNaN(celsiusValue)) {
+    if (!isValidNumber(celsius as string)) {
       return res.status(400).json({ error: 'Invalid celsius value' });
     }
 
-    const fahrenheitValue = (celsiusValue * 9 / 5) + 32;
+    const celsiusValue = parseFloat(celsius as string);
+    const fahrenheitValue = celsiusToFahrenheit(celsiusValue);
 
     res.json({
       celsius: celsiusValue,
-      fahrenheit: parseFloat(fahrenheitValue.toFixed(2))
+      fahrenheit: fahrenheitValue
     });
   }
 });
