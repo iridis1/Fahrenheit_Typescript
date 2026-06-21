@@ -44,7 +44,7 @@ export function celsiusToFahrenheit(celsius: number): number {
  * @returns De Kelvin waarde afgerond op 2 decimalen
  */
 export function celsiusToKelvin(celsius: number): number {
-  return roundWithTwoDecimals(celsius + 273.15);
+  return roundWithTwoDecimals(celsius - ABSOLUTE_ZERO_CELSIUS);
 }
 
 /**
@@ -53,7 +53,7 @@ export function celsiusToKelvin(celsius: number): number {
  * @returns De Celsius waarde afgerond op 2 decimalen
  */
 export function kelvinToCelsius(kelvin: number): number {
-  return roundWithTwoDecimals(kelvin - 273.15);
+  return roundWithTwoDecimals(kelvin + ABSOLUTE_ZERO_CELSIUS);
 }
 
 /**
@@ -65,7 +65,7 @@ export function temperaturesFromCelsius(celsius: number): Temperatures {
   const temperatures: Temperatures = {
     celsius: roundWithTwoDecimals(celsius),
     fahrenheit: roundWithTwoDecimals((celsius * 9) / 5 + 32),
-    kelvin: roundWithTwoDecimals(celsius + 273.15),
+    kelvin: roundWithTwoDecimals(celsius - ABSOLUTE_ZERO_CELSIUS),
   };
 
   if (temperatures.kelvin < 0) {
@@ -86,7 +86,7 @@ export function temperaturesFromFahrenheit(fahrenheit: number): Temperatures {
  * Berekent alle temperaturen op basis van een Kelvin waarde
  */
 export function temperaturesFromKelvin(kelvin: number): Temperatures {
-  return temperaturesFromCelsius(kelvin - 273.15);
+  return temperaturesFromCelsius(kelvin + ABSOLUTE_ZERO_CELSIUS);
 }
 
 /**
