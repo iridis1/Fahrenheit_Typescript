@@ -14,8 +14,11 @@ export class TemperatureRangeError extends Error {
 
 /** Bundelt alle temperatuurconversies en bijbehorende validatie. */
 export class TemperatureConversion {
+  /** Verschil tussen de Celsius- en Kelvin-schaal. */
+  private static readonly KELVIN_OFFSET = 273.15;
+
   /** Het absolute nulpunt in Celsius (0 Kelvin). */
-  static readonly ABSOLUTE_ZERO_CELSIUS = -273.15;
+  static readonly ABSOLUTE_ZERO_CELSIUS = -TemperatureConversion.KELVIN_OFFSET;
 
   private static roundWithTwoDecimals(value: number): number {
     const rounded = parseFloat(value.toFixed(2));
@@ -32,11 +35,11 @@ export class TemperatureConversion {
   }
 
   private static celsiusToKelvinRaw(celsius: number): number {
-    return celsius + 273.15;
+    return celsius + this.KELVIN_OFFSET;
   }
 
   private static kelvinToCelsiusRaw(kelvin: number): number {
-    return kelvin - 273.15;
+    return kelvin - this.KELVIN_OFFSET;
   }
 
   /**
