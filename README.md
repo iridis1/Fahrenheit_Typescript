@@ -66,6 +66,7 @@ curl "http://localhost/convert?kelvin=310.93"
 - `400` - Geen parameter opgegeven (geef fahrenheit, celsius of kelvin op)
 - `400` - Meerdere parameters opgegeven (geef er slechts één op)
 - `400` - Ongeldige parameter waarde
+- `400` - Temperatuur onder het absolute nulpunt (0 Kelvin / -273.15 °C / -459.67 °F)
 
 ### GET /
 

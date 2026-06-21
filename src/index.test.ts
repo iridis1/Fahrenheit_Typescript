@@ -196,6 +196,56 @@ describe('API Endpoints', () => {
       });
     });
 
+    describe('Absolute zero validation', () => {
+      it('should allow absolute zero in Kelvin', async () => {
+        const response = await request(app).get('/convert?kelvin=0');
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({
+          celsius: -273.15,
+          fahrenheit: -459.67,
+          kelvin: 0
+        });
+      });
+
+      it('should allow absolute zero in Celsius', async () => {
+        const response = await request(app).get('/convert?celsius=-273.15');
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({
+          celsius: -273.15,
+          fahrenheit: -459.67,
+          kelvin: 0
+        });
+      });
+
+      it('should allow absolute zero in Fahrenheit', async () => {
+        const response = await request(app).get('/convert?fahrenheit=-459.67');
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({
+          celsius: -273.15,
+          fahrenheit: -459.67,
+          kelvin: 0
+        });
+      });
+
+      it('should return 400 for Kelvin below absolute zero', async () => {
+        const response = await request(app).get('/convert?kelvin=-1');
+        expect(response.status).toBe(400);
+        expect(response.body.error).toBe('Temperature cannot be below absolute zero (0 Kelvin)');
+      });
+
+      it('should return 400 for Celsius below absolute zero', async () => {
+        const response = await request(app).get('/convert?celsius=-300');
+        expect(response.status).toBe(400);
+        expect(response.body.error).toBe('Temperature cannot be below absolute zero (0 Kelvin)');
+      });
+
+      it('should return 400 for Fahrenheit below absolute zero', async () => {
+        const response = await request(app).get('/convert?fahrenheit=-500');
+        expect(response.status).toBe(400);
+        expect(response.body.error).toBe('Temperature cannot be below absolute zero (0 Kelvin)');
+      });
+    });
+
     describe('Error handling', () => {
       it('should return 400 when no parameters are provided', async () => {
         const response = await request(app).get('/convert');
