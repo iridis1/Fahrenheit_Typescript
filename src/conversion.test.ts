@@ -1,4 +1,13 @@
-import { fahrenheitToCelsius, celsiusToFahrenheit, isValidNumber } from './conversion';
+import {
+  fahrenheitToCelsius,
+  celsiusToFahrenheit,
+  celsiusToKelvin,
+  kelvinToCelsius,
+  temperaturesFromCelsius,
+  temperaturesFromFahrenheit,
+  temperaturesFromKelvin,
+  isValidNumber,
+} from './conversion';
 
 describe('fahrenheitToCelsius', () => {
   it('should convert freezing point correctly', () => {
@@ -56,6 +65,68 @@ describe('celsiusToFahrenheit', () => {
   });
 });
 
+describe('celsiusToKelvin', () => {
+  it('should convert freezing point correctly', () => {
+    expect(celsiusToKelvin(0)).toBe(273.15);
+  });
+
+  it('should convert boiling point correctly', () => {
+    expect(celsiusToKelvin(100)).toBe(373.15);
+  });
+
+  it('should convert absolute zero correctly', () => {
+    expect(celsiusToKelvin(-273.15)).toBe(0);
+  });
+
+  it('should handle decimal values', () => {
+    expect(celsiusToKelvin(37.78)).toBe(310.93);
+  });
+});
+
+describe('kelvinToCelsius', () => {
+  it('should convert freezing point correctly', () => {
+    expect(kelvinToCelsius(273.15)).toBe(0);
+  });
+
+  it('should convert boiling point correctly', () => {
+    expect(kelvinToCelsius(373.15)).toBe(100);
+  });
+
+  it('should convert absolute zero correctly', () => {
+    expect(kelvinToCelsius(0)).toBe(-273.15);
+  });
+});
+
+describe('temperaturesFromCelsius', () => {
+  it('should return all three temperatures', () => {
+    expect(temperaturesFromCelsius(100)).toEqual({
+      celsius: 100,
+      fahrenheit: 212,
+      kelvin: 373.15,
+    });
+  });
+});
+
+describe('temperaturesFromFahrenheit', () => {
+  it('should return all three temperatures', () => {
+    expect(temperaturesFromFahrenheit(98.6)).toEqual({
+      celsius: 37,
+      fahrenheit: 98.6,
+      kelvin: 310.15,
+    });
+  });
+});
+
+describe('temperaturesFromKelvin', () => {
+  it('should return all three temperatures', () => {
+    expect(temperaturesFromKelvin(0)).toEqual({
+      celsius: -273.15,
+      fahrenheit: -459.67,
+      kelvin: 0,
+    });
+  });
+});
+
 describe('isValidNumber', () => {
   it('should return true for valid numbers', () => {
     expect(isValidNumber('123')).toBe(true);
@@ -94,6 +165,13 @@ describe('Conversion round-trip', () => {
     const originalCelsius = 37.78;
     const fahrenheit = celsiusToFahrenheit(originalCelsius);
     const backToCelsius = fahrenheitToCelsius(fahrenheit);
+    expect(backToCelsius).toBe(originalCelsius);
+  });
+
+  it('should maintain precision in Celsius/Kelvin round-trip conversion', () => {
+    const originalCelsius = 25;
+    const kelvin = celsiusToKelvin(originalCelsius);
+    const backToCelsius = kelvinToCelsius(kelvin);
     expect(backToCelsius).toBe(originalCelsius);
   });
 });

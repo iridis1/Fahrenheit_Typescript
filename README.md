@@ -1,6 +1,6 @@
-# Fahrenheit to Celsius Converter API
+# Temperature Converter API
 
-Een Express TypeScript webservice voor het converteren van Fahrenheit naar Celsius en vice versa.
+Een Express TypeScript webservice voor het converteren tussen Celsius, Fahrenheit en Kelvin.
 
 ## Installatie
 
@@ -35,45 +35,36 @@ Swagger UI biedt een interactieve interface om de API endpoints te testen en te 
 
 ## API Endpoint
 
-### GET /convert?fahrenheit=<waarde> of /convert?celsius=<waarde>
+### GET /convert?fahrenheit=<waarde> of /convert?celsius=<waarde> of /convert?kelvin=<waarde>
 
-Converteert Fahrenheit naar Celsius of Celsius naar Fahrenheit.
+Converteert tussen Celsius, Fahrenheit en Kelvin. Elke response bevat altijd alle drie de waarden.
 
 **Parameters:**
-- `fahrenheit` (number, optioneel) - De Fahrenheit waarde om te converteren naar Celsius
-- `celsius` (number, optioneel) - De Celsius waarde om te converteren naar Fahrenheit
+- `fahrenheit` (number, optioneel) - De Fahrenheit waarde om te converteren
+- `celsius` (number, optioneel) - De Celsius waarde om te converteren
+- `kelvin` (number, optioneel) - De Kelvin waarde om te converteren
 
-**Opmerking:** Geef precies één parameter op (fahrenheit of celsius), niet beide.
+**Opmerking:** Geef precies één parameter op (fahrenheit, celsius of kelvin), niet meerdere.
 
-**Voorbeeld Fahrenheit naar Celsius:**
+**Voorbeeld:**
 ```bash
 curl "http://localhost/convert?fahrenheit=100"
-```
-
-**Voorbeeld Celsius naar Fahrenheit:**
-```bash
 curl "http://localhost/convert?celsius=37.78"
+curl "http://localhost/convert?kelvin=310.93"
 ```
 
-**Response (Fahrenheit naar Celsius):**
-```json
-{
-  "fahrenheit": 100,
-  "celsius": 37.78
-}
-```
-
-**Response (Celsius naar Fahrenheit):**
+**Response:**
 ```json
 {
   "celsius": 37.78,
-  "fahrenheit": 100.00
+  "fahrenheit": 100,
+  "kelvin": 310.93
 }
 ```
 
 **Foutmeldingen:**
-- `400` - Geen parameter opgegeven (geef fahrenheit of celsius op)
-- `400` - Beide parameters opgegeven (geef er slechts één op)
+- `400` - Geen parameter opgegeven (geef fahrenheit, celsius of kelvin op)
+- `400` - Meerdere parameters opgegeven (geef er slechts één op)
 - `400` - Ongeldige parameter waarde
 
 ### GET /
@@ -83,11 +74,12 @@ Basis endpoint met API informatie.
 **Response:**
 ```json
 {
-  "message": "Fahrenheit to Celsius Converter API",
-  "endpoint": "/convert?fahrenheit=<value> or /convert?celsius=<value>",
+  "message": "Temperature Converter API",
+  "endpoint": "/convert?fahrenheit=<value> or /convert?celsius=<value> or /convert?kelvin=<value>",
   "examples": [
     "/convert?fahrenheit=100",
-    "/convert?celsius=37.78"
+    "/convert?celsius=37.78",
+    "/convert?kelvin=310.93"
   ]
 }
 ```
