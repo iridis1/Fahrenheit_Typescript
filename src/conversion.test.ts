@@ -7,6 +7,7 @@ import {
   temperaturesFromFahrenheit,
   temperaturesFromKelvin,
   isValidNumber,
+  TemperatureRangeError,
 } from './conversion';
 
 describe('fahrenheitToCelsius', () => {
@@ -124,6 +125,26 @@ describe('temperaturesFromKelvin', () => {
       fahrenheit: -459.67,
       kelvin: 0,
     });
+  });
+});
+
+describe('absolute zero validation', () => {
+  it('should allow absolute zero', () => {
+    expect(temperaturesFromCelsius(-273.15).kelvin).toBe(0);
+    expect(temperaturesFromFahrenheit(-459.67).kelvin).toBe(0);
+    expect(temperaturesFromKelvin(0).kelvin).toBe(0);
+  });
+
+  it('should throw for Celsius below absolute zero', () => {
+    expect(() => temperaturesFromCelsius(-300)).toThrow(TemperatureRangeError);
+  });
+
+  it('should throw for Fahrenheit below absolute zero', () => {
+    expect(() => temperaturesFromFahrenheit(-500)).toThrow(TemperatureRangeError);
+  });
+
+  it('should throw for Kelvin below absolute zero', () => {
+    expect(() => temperaturesFromKelvin(-1)).toThrow(TemperatureRangeError);
   });
 });
 

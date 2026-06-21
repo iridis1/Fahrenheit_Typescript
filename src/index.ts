@@ -6,12 +6,25 @@ import {
   temperaturesFromFahrenheit,
   temperaturesFromCelsius,
   temperaturesFromKelvin,
+  Temperatures,
+  TemperatureRangeError,
 } from './conversion';
 
 const app = express();
 const PORT = 80;
 
 app.use(express.json());
+
+function sendTemperatures(res: Response, convert: () => Temperatures): Response {
+  try {
+    return res.json(convert());
+  } catch (error) {
+    if (error instanceof TemperatureRangeError) {
+      return res.status(400).json({ error: error.message });
+    }
+    throw error;
+  }
+}
 
 const swaggerOptions = {
   definition: {
@@ -39,7 +52,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  * /convert:
  *   get:
  *     summary: Converteert tussen Celsius, Fahrenheit en Kelvin
- *     description: Geef precies één parameter op. De response bevat altijd celsius, fahrenheit en kelvin.
+ *     description: Geef precies één parameter op. De response bevat altijd celsius, fahrenheit en kelvin. Temperaturen onder het absolute nulpunt (0 Kelvin) geven een 400.
  *     tags: [Conversion]
  *     parameters:
  *       - in: query
@@ -101,20 +114,20 @@ app.get('/convert', (req: Request, res: Response) => {
     if (!isValidNumber(fahrenheit as string)) {
       return res.status(400).json({ error: 'Invalid fahrenheit value' });
     }
-    return res.json(temperaturesFromFahrenheit(parseFloat(fahrenheit as string)));
+    return sendTemperatures(res, () => temperaturesFromFahrenheit(parseFloat(fahrenheit as string)));
   }
 
   if (celsius !== undefined) {
     if (!isValidNumber(celsius as string)) {
       return res.status(400).json({ error: 'Invalid celsius value' });
     }
-    return res.json(temperaturesFromCelsius(parseFloat(celsius as string)));
+    return sendTemperatures(res, () => temperaturesFromCelsius(parseFloat(celsius as string)));
   }
 
   if (!isValidNumber(kelvin as string)) {
     return res.status(400).json({ error: 'Invalid kelvin value' });
   }
-  return res.json(temperaturesFromKelvin(parseFloat(kelvin as string)));
+  return sendTemperatures(res, () => temperaturesFromKelvin(parseFloat(kelvin as string)));
 });
 
 /**
