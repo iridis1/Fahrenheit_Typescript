@@ -7,6 +7,7 @@ import {
   temperaturesFromCelsius,
   temperaturesFromKelvin,
   Temperatures,
+  TemperatureRangeError,
 } from './conversion';
 
 const app = express();
@@ -14,11 +15,15 @@ const PORT = 80;
 
 app.use(express.json());
 
-function sendTemperatures(res: Response, temperatures: Temperatures): Response {
-  if (temperatures.kelvin < 0) {
-    return res.status(400).json({ error: 'Temperature cannot be below absolute zero (0 Kelvin)' });
+function sendTemperatures(res: Response, convert: () => Temperatures): Response {
+  try {
+    return res.json(convert());
+  } catch (error) {
+    if (error instanceof TemperatureRangeError) {
+      return res.status(400).json({ error: error.message });
+    }
+    throw error;
   }
-  return res.json(temperatures);
 }
 
 const swaggerOptions = {
@@ -109,20 +114,20 @@ app.get('/convert', (req: Request, res: Response) => {
     if (!isValidNumber(fahrenheit as string)) {
       return res.status(400).json({ error: 'Invalid fahrenheit value' });
     }
-    return sendTemperatures(res, temperaturesFromFahrenheit(parseFloat(fahrenheit as string)));
+    return sendTemperatures(res, () => temperaturesFromFahrenheit(parseFloat(fahrenheit as string)));
   }
 
   if (celsius !== undefined) {
     if (!isValidNumber(celsius as string)) {
       return res.status(400).json({ error: 'Invalid celsius value' });
     }
-    return sendTemperatures(res, temperaturesFromCelsius(parseFloat(celsius as string)));
+    return sendTemperatures(res, () => temperaturesFromCelsius(parseFloat(celsius as string)));
   }
 
   if (!isValidNumber(kelvin as string)) {
     return res.status(400).json({ error: 'Invalid kelvin value' });
   }
-  return sendTemperatures(res, temperaturesFromKelvin(parseFloat(kelvin as string)));
+  return sendTemperatures(res, () => temperaturesFromKelvin(parseFloat(kelvin as string)));
 });
 
 /**

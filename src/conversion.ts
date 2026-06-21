@@ -4,8 +4,20 @@ export interface Temperatures {
   kelvin: number;
 }
 
+/** Het absolute nulpunt in Celsius (0 Kelvin). */
+export const ABSOLUTE_ZERO_CELSIUS = -273.15;
+
+/** Fout die wordt gegooid bij een temperatuur onder het absolute nulpunt. */
+export class TemperatureRangeError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'TemperatureRangeError';
+  }
+}
+
 function roundWithTwoDecimals(value: number): number {
-  return parseFloat(value.toFixed(2));
+  const rounded = parseFloat(value.toFixed(2));
+  return rounded === 0 ? 0 : rounded;
 }
 
 /**
@@ -50,11 +62,17 @@ export function kelvinToCelsius(kelvin: number): number {
  * @returns Alle drie de temperaturen afgerond op 2 decimalen
  */
 export function temperaturesFromCelsius(celsius: number): Temperatures {
-  return {
+  const temperatures: Temperatures = {
     celsius: roundWithTwoDecimals(celsius),
     fahrenheit: roundWithTwoDecimals((celsius * 9) / 5 + 32),
     kelvin: roundWithTwoDecimals(celsius + 273.15),
   };
+
+  if (temperatures.kelvin < 0) {
+    throw new TemperatureRangeError('Temperature cannot be below absolute zero (0 Kelvin)');
+  }
+
+  return temperatures;
 }
 
 /**
