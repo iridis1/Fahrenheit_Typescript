@@ -24,6 +24,7 @@ export function celsiusToFahrenheit(celsius: number): number {
  * @returns true als het een geldig getal is, anders false
  */
 export function isValidNumber(value: string): boolean {
-  const parsed = parseFloat(value);
+  if (value.trim().length === 0) return false;
+  const parsed = Number(value);
   return !isNaN(parsed);
 }

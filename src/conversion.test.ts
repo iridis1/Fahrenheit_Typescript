@@ -70,6 +70,7 @@ describe('isValidNumber', () => {
     expect(isValidNumber('abc')).toBe(false);
     expect(isValidNumber('')).toBe(false);
     expect(isValidNumber('123abc')).toBe(false);
+    expect(isValidNumber('abc123')).toBe(false);
     expect(isValidNumber('NaN')).toBe(false);
     expect(isValidNumber('undefined')).toBe(false);
   });
