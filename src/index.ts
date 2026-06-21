@@ -1,7 +1,12 @@
 import express, { Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
-import { fahrenheitToCelsius, celsiusToFahrenheit, isValidNumber } from './conversion';
+import {
+  isValidNumber,
+  temperaturesFromFahrenheit,
+  temperaturesFromCelsius,
+  temperaturesFromKelvin,
+} from './conversion';
 
 const app = express();
 const PORT = 80;
@@ -12,9 +17,9 @@ const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Fahrenheit to Celsius Converter API',
+      title: 'Temperature Converter API',
       version: '1.0.0',
-      description: 'Een Express TypeScript webservice voor het converteren van Fahrenheit naar Celsius',
+      description: 'Een Express TypeScript webservice voor het converteren tussen Celsius, Fahrenheit en Kelvin',
     },
     servers: [
       {
@@ -33,7 +38,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  * @swagger
  * /convert:
  *   get:
- *     summary: Converteert Fahrenheit naar Celsius of Celsius naar Fahrenheit
+ *     summary: Converteert tussen Celsius, Fahrenheit en Kelvin
+ *     description: Geef precies één parameter op. De response bevat altijd celsius, fahrenheit en kelvin.
  *     tags: [Conversion]
  *     parameters:
  *       - in: query
@@ -41,13 +47,19 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *         required: false
  *         schema:
  *           type: number
- *         description: De Fahrenheit waarde om te converteren naar Celsius
+ *         description: De Fahrenheit waarde om te converteren
  *       - in: query
  *         name: celsius
  *         required: false
  *         schema:
  *           type: number
- *         description: De Celsius waarde om te converteren naar Fahrenheit
+ *         description: De Celsius waarde om te converteren
+ *       - in: query
+ *         name: kelvin
+ *         required: false
+ *         schema:
+ *           type: number
+ *         description: De Kelvin waarde om te converteren
  *     responses:
  *       200:
  *         description: Succesvolle conversie
@@ -56,9 +68,11 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *             schema:
  *               type: object
  *               properties:
+ *                 celsius:
+ *                   type: number
  *                 fahrenheit:
  *                   type: number
- *                 celsius:
+ *                 kelvin:
  *                   type: number
  *       400:
  *         description: Ontbrekende of ongeldige parameter
@@ -71,41 +85,36 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
  *                   type: string
  */
 app.get('/convert', (req: Request, res: Response) => {
-  const { fahrenheit, celsius } = req.query;
+  const { fahrenheit, celsius, kelvin } = req.query;
 
-  if (!fahrenheit && !celsius) {
-    return res.status(400).json({ error: 'Missing parameter: provide either fahrenheit or celsius' });
+  const provided = [fahrenheit, celsius, kelvin].filter((value) => value !== undefined);
+
+  if (provided.length === 0) {
+    return res.status(400).json({ error: 'Missing parameter: provide fahrenheit, celsius, or kelvin' });
   }
 
-  if (fahrenheit && celsius) {
-    return res.status(400).json({ error: 'Provide only one parameter: either fahrenheit or celsius, not both' });
+  if (provided.length > 1) {
+    return res.status(400).json({ error: 'Provide only one parameter: fahrenheit, celsius, or kelvin' });
   }
 
-  if (fahrenheit) {
+  if (fahrenheit !== undefined) {
     if (!isValidNumber(fahrenheit as string)) {
       return res.status(400).json({ error: 'Invalid fahrenheit value' });
     }
+    return res.json(temperaturesFromFahrenheit(parseFloat(fahrenheit as string)));
+  }
 
-    const fahrenheitValue = parseFloat(fahrenheit as string);
-    const celsiusValue = fahrenheitToCelsius(fahrenheitValue);
-
-    res.json({
-      fahrenheit: fahrenheitValue,
-      celsius: celsiusValue
-    });
-  } else if (celsius) {
+  if (celsius !== undefined) {
     if (!isValidNumber(celsius as string)) {
       return res.status(400).json({ error: 'Invalid celsius value' });
     }
-
-    const celsiusValue = parseFloat(celsius as string);
-    const fahrenheitValue = celsiusToFahrenheit(celsiusValue);
-
-    res.json({
-      celsius: celsiusValue,
-      fahrenheit: fahrenheitValue
-    });
+    return res.json(temperaturesFromCelsius(parseFloat(celsius as string)));
   }
+
+  if (!isValidNumber(kelvin as string)) {
+    return res.status(400).json({ error: 'Invalid kelvin value' });
+  }
+  return res.json(temperaturesFromKelvin(parseFloat(kelvin as string)));
 });
 
 /**
@@ -131,11 +140,12 @@ app.get('/convert', (req: Request, res: Response) => {
  */
 app.get('/', (req: Request, res: Response) => {
   res.json({
-    message: 'Fahrenheit to Celsius Converter API',
-    endpoint: '/convert?fahrenheit=<value> or /convert?celsius=<value>',
+    message: 'Temperature Converter API',
+    endpoint: '/convert?fahrenheit=<value> or /convert?celsius=<value> or /convert?kelvin=<value>',
     examples: [
       '/convert?fahrenheit=100',
-      '/convert?celsius=37.78'
+      '/convert?celsius=37.78',
+      '/convert?kelvin=310.93'
     ]
   });
 });

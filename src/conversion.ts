@@ -1,11 +1,20 @@
+export interface Temperatures {
+  celsius: number;
+  fahrenheit: number;
+  kelvin: number;
+}
+
+function round2(value: number): number {
+  return parseFloat(value.toFixed(2));
+}
+
 /**
  * Converteert Fahrenheit naar Celsius
  * @param fahrenheit - De Fahrenheit waarde
  * @returns De Celsius waarde afgerond op 2 decimalen
  */
 export function fahrenheitToCelsius(fahrenheit: number): number {
-  const celsius = (fahrenheit - 32) * (5 / 9);
-  return parseFloat(celsius.toFixed(2));
+  return round2((fahrenheit - 32) * (5 / 9));
 }
 
 /**
@@ -14,8 +23,52 @@ export function fahrenheitToCelsius(fahrenheit: number): number {
  * @returns De Fahrenheit waarde afgerond op 2 decimalen
  */
 export function celsiusToFahrenheit(celsius: number): number {
-  const fahrenheit = (celsius * 9 / 5) + 32;
-  return parseFloat(fahrenheit.toFixed(2));
+  return round2((celsius * 9) / 5 + 32);
+}
+
+/**
+ * Converteert Celsius naar Kelvin
+ * @param celsius - De Celsius waarde
+ * @returns De Kelvin waarde afgerond op 2 decimalen
+ */
+export function celsiusToKelvin(celsius: number): number {
+  return round2(celsius + 273.15);
+}
+
+/**
+ * Converteert Kelvin naar Celsius
+ * @param kelvin - De Kelvin waarde
+ * @returns De Celsius waarde afgerond op 2 decimalen
+ */
+export function kelvinToCelsius(kelvin: number): number {
+  return round2(kelvin - 273.15);
+}
+
+/**
+ * Berekent Celsius, Fahrenheit en Kelvin op basis van een Celsius waarde
+ * @param celsius - De (ongeronde) Celsius waarde
+ * @returns Alle drie de temperaturen afgerond op 2 decimalen
+ */
+export function temperaturesFromCelsius(celsius: number): Temperatures {
+  return {
+    celsius: round2(celsius),
+    fahrenheit: round2((celsius * 9) / 5 + 32),
+    kelvin: round2(celsius + 273.15),
+  };
+}
+
+/**
+ * Berekent alle temperaturen op basis van een Fahrenheit waarde
+ */
+export function temperaturesFromFahrenheit(fahrenheit: number): Temperatures {
+  return temperaturesFromCelsius((fahrenheit - 32) * (5 / 9));
+}
+
+/**
+ * Berekent alle temperaturen op basis van een Kelvin waarde
+ */
+export function temperaturesFromKelvin(kelvin: number): Temperatures {
+  return temperaturesFromCelsius(kelvin - 273.15);
 }
 
 /**
