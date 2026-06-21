@@ -69,6 +69,7 @@ describe('isValidNumber', () => {
   it('should return false for invalid values', () => {
     expect(isValidNumber('abc')).toBe(false);
     expect(isValidNumber('')).toBe(false);
+    expect(isValidNumber(' ')).toBe(false);
     expect(isValidNumber('123abc')).toBe(false);
     expect(isValidNumber('abc123')).toBe(false);
     expect(isValidNumber('NaN')).toBe(false);
@@ -76,7 +77,7 @@ describe('isValidNumber', () => {
   });
 
   it('should handle edge cases', () => {
-    expect(isValidNumber('   123   ')).toBe(true);
+    expect(isValidNumber(' 123 ')).toBe(true);
     expect(isValidNumber('123.45.67')).toBe(false);
   });
 });
