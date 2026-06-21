@@ -4,7 +4,7 @@ export interface Temperatures {
   kelvin: number;
 }
 
-function round2(value: number): number {
+function roundWithTwoDecimals(value: number): number {
   return parseFloat(value.toFixed(2));
 }
 
@@ -14,7 +14,7 @@ function round2(value: number): number {
  * @returns De Celsius waarde afgerond op 2 decimalen
  */
 export function fahrenheitToCelsius(fahrenheit: number): number {
-  return round2((fahrenheit - 32) * (5 / 9));
+  return roundWithTwoDecimals((fahrenheit - 32) * (5 / 9));
 }
 
 /**
@@ -23,7 +23,7 @@ export function fahrenheitToCelsius(fahrenheit: number): number {
  * @returns De Fahrenheit waarde afgerond op 2 decimalen
  */
 export function celsiusToFahrenheit(celsius: number): number {
-  return round2((celsius * 9) / 5 + 32);
+  return roundWithTwoDecimals((celsius * 9) / 5 + 32);
 }
 
 /**
@@ -32,7 +32,7 @@ export function celsiusToFahrenheit(celsius: number): number {
  * @returns De Kelvin waarde afgerond op 2 decimalen
  */
 export function celsiusToKelvin(celsius: number): number {
-  return round2(celsius + 273.15);
+  return roundWithTwoDecimals(celsius + 273.15);
 }
 
 /**
@@ -41,7 +41,7 @@ export function celsiusToKelvin(celsius: number): number {
  * @returns De Celsius waarde afgerond op 2 decimalen
  */
 export function kelvinToCelsius(kelvin: number): number {
-  return round2(kelvin - 273.15);
+  return roundWithTwoDecimals(kelvin - 273.15);
 }
 
 /**
@@ -51,9 +51,9 @@ export function kelvinToCelsius(kelvin: number): number {
  */
 export function temperaturesFromCelsius(celsius: number): Temperatures {
   return {
-    celsius: round2(celsius),
-    fahrenheit: round2((celsius * 9) / 5 + 32),
-    kelvin: round2(celsius + 273.15),
+    celsius: roundWithTwoDecimals(celsius),
+    fahrenheit: roundWithTwoDecimals((celsius * 9) / 5 + 32),
+    kelvin: roundWithTwoDecimals(celsius + 273.15),
   };
 }
 
