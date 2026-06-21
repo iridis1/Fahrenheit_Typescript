@@ -1,58 +1,5 @@
 import request from 'supertest';
-import express from 'express';
-import { fahrenheitToCelsius, celsiusToFahrenheit, isValidNumber } from './conversion';
-
-const app = express();
-app.use(express.json());
-
-app.get('/convert', (req, res) => {
-  const { fahrenheit, celsius } = req.query;
-
-  if (!fahrenheit && !celsius) {
-    return res.status(400).json({ error: 'Missing parameter: provide either fahrenheit or celsius' });
-  }
-
-  if (fahrenheit && celsius) {
-    return res.status(400).json({ error: 'Provide only one parameter: either fahrenheit or celsius, not both' });
-  }
-
-  if (fahrenheit) {
-    if (!isValidNumber(fahrenheit as string)) {
-      return res.status(400).json({ error: 'Invalid fahrenheit value' });
-    }
-
-    const fahrenheitValue = parseFloat(fahrenheit as string);
-    const celsiusValue = fahrenheitToCelsius(fahrenheitValue);
-
-    res.json({
-      fahrenheit: fahrenheitValue,
-      celsius: celsiusValue
-    });
-  } else if (celsius) {
-    if (!isValidNumber(celsius as string)) {
-      return res.status(400).json({ error: 'Invalid celsius value' });
-    }
-
-    const celsiusValue = parseFloat(celsius as string);
-    const fahrenheitValue = celsiusToFahrenheit(celsiusValue);
-
-    res.json({
-      celsius: celsiusValue,
-      fahrenheit: fahrenheitValue
-    });
-  }
-});
-
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Fahrenheit to Celsius Converter API',
-    endpoint: '/convert?fahrenheit=<value> or /convert?celsius=<value>',
-    examples: [
-      '/convert?fahrenheit=100',
-      '/convert?celsius=37.78'
-    ]
-  });
-});
+import { app } from './index';
 
 describe('API Endpoints', () => {
   describe('GET /', () => {
