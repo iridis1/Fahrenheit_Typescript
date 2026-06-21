@@ -22,13 +22,30 @@ export class TemperatureConversion {
     return rounded === 0 ? 0 : rounded;
   }
 
+  // Ruwe (niet-afgeronde) formules; de enige plek waar de conversielogica staat.
+  private static fahrenheitToCelsiusRaw(fahrenheit: number): number {
+    return (fahrenheit - 32) * (5 / 9);
+  }
+
+  private static celsiusToFahrenheitRaw(celsius: number): number {
+    return (celsius * 9) / 5 + 32;
+  }
+
+  private static celsiusToKelvinRaw(celsius: number): number {
+    return celsius + 273.15;
+  }
+
+  private static kelvinToCelsiusRaw(kelvin: number): number {
+    return kelvin - 273.15;
+  }
+
   /**
    * Converteert Fahrenheit naar Celsius
    * @param fahrenheit - De Fahrenheit waarde
    * @returns De Celsius waarde afgerond op 2 decimalen
    */
   static fahrenheitToCelsius(fahrenheit: number): number {
-    return this.roundWithTwoDecimals((fahrenheit - 32) * (5 / 9));
+    return this.roundWithTwoDecimals(this.fahrenheitToCelsiusRaw(fahrenheit));
   }
 
   /**
@@ -37,7 +54,7 @@ export class TemperatureConversion {
    * @returns De Fahrenheit waarde afgerond op 2 decimalen
    */
   static celsiusToFahrenheit(celsius: number): number {
-    return this.roundWithTwoDecimals((celsius * 9) / 5 + 32);
+    return this.roundWithTwoDecimals(this.celsiusToFahrenheitRaw(celsius));
   }
 
   /**
@@ -46,7 +63,7 @@ export class TemperatureConversion {
    * @returns De Kelvin waarde afgerond op 2 decimalen
    */
   static celsiusToKelvin(celsius: number): number {
-    return this.roundWithTwoDecimals(celsius + 273.15);
+    return this.roundWithTwoDecimals(this.celsiusToKelvinRaw(celsius));
   }
 
   /**
@@ -55,7 +72,7 @@ export class TemperatureConversion {
    * @returns De Celsius waarde afgerond op 2 decimalen
    */
   static kelvinToCelsius(kelvin: number): number {
-    return this.roundWithTwoDecimals(kelvin - 273.15);
+    return this.roundWithTwoDecimals(this.kelvinToCelsiusRaw(kelvin));
   }
 
   /**
@@ -66,8 +83,8 @@ export class TemperatureConversion {
   static temperaturesFromCelsius(celsius: number): Temperatures {
     const temperatures: Temperatures = {
       celsius: this.roundWithTwoDecimals(celsius),
-      fahrenheit: this.roundWithTwoDecimals((celsius * 9) / 5 + 32),
-      kelvin: this.roundWithTwoDecimals(celsius + 273.15),
+      fahrenheit: this.roundWithTwoDecimals(this.celsiusToFahrenheitRaw(celsius)),
+      kelvin: this.roundWithTwoDecimals(this.celsiusToKelvinRaw(celsius)),
     };
 
     if (temperatures.kelvin < 0) {
@@ -81,14 +98,14 @@ export class TemperatureConversion {
    * Berekent alle temperaturen op basis van een Fahrenheit waarde
    */
   static temperaturesFromFahrenheit(fahrenheit: number): Temperatures {
-    return this.temperaturesFromCelsius((fahrenheit - 32) * (5 / 9));
+    return this.temperaturesFromCelsius(this.fahrenheitToCelsiusRaw(fahrenheit));
   }
 
   /**
    * Berekent alle temperaturen op basis van een Kelvin waarde
    */
   static temperaturesFromKelvin(kelvin: number): Temperatures {
-    return this.temperaturesFromCelsius(kelvin - 273.15);
+    return this.temperaturesFromCelsius(this.kelvinToCelsiusRaw(kelvin));
   }
 
   /**
